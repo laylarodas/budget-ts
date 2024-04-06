@@ -16,7 +16,7 @@ export const ExpenseList = () => {
             <p className=" text-gray-600 font-bold text-center text-2xl">No expenses</p>
         ) : (
             <>
-                <p className="text-gray-600 text-2xl font-bold my-5">
+                <p className="text-gray-600 text-2xl font-bold my-5 text-center">
                     Expenses List
                 </p>
                 {state.expenses.map(expense => (
