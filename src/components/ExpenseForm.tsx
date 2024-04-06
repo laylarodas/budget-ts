@@ -1,7 +1,16 @@
 import { categories } from "../database/categories"
+import DatePicker from 'react-date-picker';
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
+
+type ValuePiece = Date | null;
+
+type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 
 export const ExpenseForm = () => {
+
+
   return (
     <form action="" className="space-y-5">
         <legend className=" uppercase text-center text-lg font-bold border-b-4 border-blue-500 py-2">
@@ -27,6 +36,11 @@ export const ExpenseForm = () => {
                 ))}
 
             </select> 
+        </div>
+
+        <div className=" flex flex-col gap-2">
+            <label htmlFor="date" className="text-lg">Expense Date: </label>
+            <DatePicker className=" bg-slate-100 p-2 border-0 " />
         </div>
 
         <input type="submit" value={'Save Expense'} className=" bg-blue-600 cursor-pointer w-full p-2 text-white uppercase font-bold rounded-lg"/>
