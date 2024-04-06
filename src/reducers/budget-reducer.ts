@@ -1,15 +1,16 @@
-import {v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import { DraftExpense, Expense } from "../types"
 
 
 export type BudgetActions =
-    { type: 'add-budget', payload:{ budget: number }} |
-    { type: 'show-modal'} |
-    { type: 'hide-modal'} |
-    { type: 'add-expense', payload: {expense: DraftExpense} } |
-    { type: 'delete-expense', payload: {id: Expense['id']} } |
-    { type: 'get-expense-by-id', payload: {id: Expense['id']} } |
-    { type: 'update-expense', payload: {expense: Expense} }
+    { type: 'add-budget', payload: { budget: number } } |
+    { type: 'show-modal' } |
+    { type: 'hide-modal' } |
+    { type: 'add-expense', payload: { expense: DraftExpense } } |
+    { type: 'delete-expense', payload: { id: Expense['id'] } } |
+    { type: 'get-expense-by-id', payload: { id: Expense['id'] } } |
+    { type: 'update-expense', payload: { expense: Expense } } |
+    { type: 'reset-app' }
 
 
 export type BudgetState = {
@@ -19,12 +20,12 @@ export type BudgetState = {
     editingId: Expense['id']
 }
 
-const initialBudget = () : number => {
+const initialBudget = (): number => {
     const localStorageBudget = localStorage.getItem('budget')
     return localStorageBudget ? +localStorageBudget : 0
 }
 
-const localStorageExpenses = () : Expense[] => {
+const localStorageExpenses = (): Expense[] => {
     const localStorageExpenses = localStorage.getItem('expenses')
     return localStorageExpenses ? JSON.parse(localStorageExpenses) : []
 }
@@ -107,6 +108,14 @@ export const budgetReducer = (
         }
     }
 
+    if (action.type === 'reset-app') {
+        return {
+            ...state,
+            budget: 0,
+            expenses: [],
+
+        }
+    }
 
     return state
 }
