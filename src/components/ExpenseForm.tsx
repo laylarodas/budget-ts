@@ -5,7 +5,7 @@ import DatePicker from 'react-date-picker';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import { ErrorMessage } from "./ErrorMessage";
-
+import { useBudget } from "../hooks/useBudget";
 
 
 export const ExpenseForm = () => {
@@ -18,7 +18,7 @@ export const ExpenseForm = () => {
     })
 
     const [error, setError] = useState('');
- 
+    const { dispatch } = useBudget()
 
     const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target
@@ -44,6 +44,18 @@ export const ExpenseForm = () => {
             setError('All fields are required')
             return
         }
+
+        //add expense
+
+        dispatch({type: 'add-expense', payload: {expense}})
+
+        //reset state
+        setExpense({
+            expenseName: '',
+            amount: 0,
+            category: '',
+            date: new Date()
+        })
     }
 
     return (
