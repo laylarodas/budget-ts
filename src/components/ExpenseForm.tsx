@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import type { DraftExpense, Value } from "../types";
 import { categories } from "../database/categories"
 import DatePicker from 'react-date-picker';
@@ -18,7 +18,16 @@ export const ExpenseForm = () => {
     })
 
     const [error, setError] = useState('');
-    const { dispatch } = useBudget()
+    const { dispatch, state } = useBudget();
+
+    useEffect(() => {
+        if(state.editingId) {
+            const editingExpense = state.expenses.filter(currentExpense => currentExpense.id === state.editingId)[0]
+
+            setExpense(editingExpense)
+        }
+    }, [state.editingId])
+
 
     const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target
@@ -45,9 +54,15 @@ export const ExpenseForm = () => {
             return
         }
 
-        //add expense
+        //add expense or update expense
 
-        dispatch({type: 'add-expense', payload: {expense}})
+        if(state.editingId) {
+            dispatch({type: 'update-expense', payload: {expense: {...expense, id: state.editingId}}})
+        } else {
+            dispatch({type: 'add-expense', payload: {expense}})
+        }
+
+        
 
         //reset state
         setExpense({
@@ -61,7 +76,7 @@ export const ExpenseForm = () => {
     return (
         <form action="" className="space-y-5" onSubmit={handleSubmit}>
             <legend className=" uppercase text-center text-lg font-bold border-b-4 border-blue-500 py-2">
-                New Expense
+                {state.editingId ? 'Edit Expense' : "New Expense"}
             </legend>
 
             {error && <ErrorMessage >{error}</ErrorMessage>}
@@ -92,7 +107,7 @@ export const ExpenseForm = () => {
                 <DatePicker className=" bg-slate-100 p-2 border-0" value={expense.date} onChange={handleChangeDate}/>
             </div>
 
-            <input type="submit" value={'Save Expense'} className=" bg-blue-600 cursor-pointer w-full p-2 text-white uppercase font-bold rounded-lg" />
+            <input type="submit" value= {state.editingId ? 'Save Changes' : "Save Expense"} className=" bg-blue-600 cursor-pointer w-full p-2 text-white uppercase font-bold rounded-lg" />
 
         </form>
     )
