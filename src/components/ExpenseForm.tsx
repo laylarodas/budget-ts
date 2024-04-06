@@ -18,13 +18,15 @@ export const ExpenseForm = () => {
     })
 
     const [error, setError] = useState('');
-    const { dispatch, state } = useBudget();
+    const [previusAmount, setPreviusAmount] = useState(0);
+    const { dispatch, state, availableBudget } = useBudget();
 
     useEffect(() => {
         if(state.editingId) {
             const editingExpense = state.expenses.filter(currentExpense => currentExpense.id === state.editingId)[0]
 
             setExpense(editingExpense)
+            setPreviusAmount(editingExpense.amount)
         }
     }, [state.editingId])
 
@@ -47,10 +49,18 @@ export const ExpenseForm = () => {
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+
         //validation
 
         if(Object.values(expense).includes('')) {
             setError('All fields are required')
+            return
+        }
+
+        //check if amount is greater than available budget
+
+        if((expense.amount - previusAmount) > availableBudget) {
+            setError('Amount exceeds available budget')
             return
         }
 
@@ -71,6 +81,8 @@ export const ExpenseForm = () => {
             category: '',
             date: new Date()
         })
+
+        setPreviusAmount(0)
     }
 
     return (
